@@ -1,0 +1,12 @@
+Package: p-monitor
+Version: 1.0.0
+Section: utils
+Priority: optional
+Architecture: amd64
+Depends: libgl1-mesa-dev, libx11-dev, libxcursor-dev, libxrandr-dev, libxinerama-dev, libxi-dev, libxxf86vm-dev, libglfw3-dev, pkg-config
+Recommends: nvidia-smi, radeontop
+Maintainer: lfsc09 <lfsc09@gmail.com>
+Description: System performance monitor for Linux
+ A lightweight system monitor that runs in the system tray and displays
+ CPU, memory, disk, and GPU usage information with temperature monitoring.
+ Supports both NVIDIA and AMD GPUs using reliable command-line tools.

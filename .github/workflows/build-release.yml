@@ -1,0 +1,77 @@
+name: Build Release Package
+
+on:
+  release:
+    types: [published]
+    branches: [main]
+
+jobs:
+  build-deb:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+        
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          libgl1-mesa-dev \
+          libx11-dev \
+          libxcursor-dev \
+          libxrandr-dev \
+          libxinerama-dev \
+          libxi-dev \
+          libxxf86vm-dev \
+          libglfw3-dev \
+          pkg-config \
+          dpkg-dev
+          
+    - name: Build application
+      run: |
+        go mod tidy
+        go build -o debian/usr/bin/p-monitor ./cmd
+        
+    - name: Copy assets
+      run: |
+        cp assets/*.png debian/usr/share/p-monitor/assets/
+        chmod +x debian/usr/bin/p-monitor
+        
+    - name: Update version in control file
+      run: |
+        VERSION=${GITHUB_REF#refs/tags/}
+        sed -i "s/Version: .*/Version: $VERSION/" debian/DEBIAN/control
+        
+    - name: Build .deb package
+      run: |
+        dpkg-deb --build debian p-monitor_${GITHUB_REF#refs/tags/}_amd64.deb
+        
+    - name: Upload .deb package as release asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./p-monitor_${GITHUB_REF#refs/tags/}_amd64.deb
+        asset_name: p-monitor_${GITHUB_REF#refs/tags/}_amd64.deb
+        asset_content_type: application/vnd.debian.binary-package
+        
+    - name: Create checksums
+      run: |
+        sha256sum p-monitor_${GITHUB_REF#refs/tags/}_amd64.deb > p-monitor_${GITHUB_REF#refs/tags/}_amd64.deb.sha256
+        
+    - name: Upload checksums as release asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./p-monitor_${GITHUB_REF#refs/tags/}_amd64.deb.sha256
+        asset_name: p-monitor_${GITHUB_REF#refs/tags/}_amd64.deb.sha256
+        asset_content_type: text/plain

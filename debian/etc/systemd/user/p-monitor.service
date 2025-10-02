@@ -1,0 +1,14 @@
+[Unit]
+Description=p-monitor System Performance Monitor
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/p-monitor
+Restart=always
+RestartSec=5
+Environment=DISPLAY=:0
+Environment=XDG_RUNTIME_DIR=/run/user/%i
+
+[Install]
+WantedBy=default.target

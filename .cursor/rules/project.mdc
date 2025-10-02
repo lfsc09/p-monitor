@@ -1,0 +1,26 @@
+---
+alwaysApply: true
+---
+
+# About
+
+This Go project's objective is to make a .deb for linux that monitors performance of my machine, running in background to gather the following information:
+- The disk total capacity and used space in percentage.
+- The memory total capacity and usage in percentage.
+- The total CPU usage in percentage and it's temperature.
+- The GPU usage in percentage and temperature. (It must gather both integrated [if available] GPU and dedicated [if available] GPU)
+  - Dedicated GPU must check and consider both AMD and Nvidia.
+
+The program when running, should not appear in the Dock (Side bar) like regular programs, it should only show an icon in the desktop Top bar where it will show:
+- The gathered information in each "line" using available icons from `/assets` to better differentiate resources.
+- A number input so the user can change the time between reads, and where he can choose between "seconds" and "minutes". (Ex.: 5 seconds, 1 minute, 15 minutes)
+- An input so the user can choose between Celcius or Fahrenheit temperature.
+
+# Logging
+
+The program should should log to `~/.p-monitor/logs`.
+
+# Structure
+
+Project assets will be located at `/assets` (Ex.: icons).
+A simple architeture to separate data gather from data display will be followed, so they should be in separate packages.

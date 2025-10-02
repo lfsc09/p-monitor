@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=p-monitor
+Comment=System Performance Monitor
+Exec=p-monitor
+Icon=p-monitor
+Terminal=false
+Type=Application
+Categories=System;Monitor;
+StartupNotify=false
+NoDisplay=true

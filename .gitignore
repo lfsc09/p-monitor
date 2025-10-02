@@ -1,0 +1,29 @@
+# Binaries
+p-monitor
+test-monitor
+*.deb
+
+# Go build cache
+go.sum
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Build artifacts
+debian/usr/bin/p-monitor
+debian/usr/share/p-monitor/assets/*.png
+dev-debian/

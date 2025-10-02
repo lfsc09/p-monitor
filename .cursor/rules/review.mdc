@@ -1,0 +1,20 @@
+---
+description: Guidlines when reviewing code
+alwaysApply: false
+---
+
+# Review
+
+- Check **code formatting** to ensure it follows the project guidelines.
+
+- Check if:
+  - Any part of the code is breaking established **best practices**.
+  - Any **comments** are missing.
+  - Any **values are hardcoded**.
+
+- Check for:
+  - **Unused imports**.
+  - **Unused variables**.
+  - **Unused code**, functions, or files in the project source code.
+  
+- Look for opportunities to make the code **clearer and more objective**.

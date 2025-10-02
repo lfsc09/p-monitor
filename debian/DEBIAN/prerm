@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Stop the service before removal
+systemctl --user stop p-monitor.service
+systemctl --user disable p-monitor.service

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Create user directories
+mkdir -p ~/.p-monitor/logs
+
+# Enable and start the user service
+systemctl --user enable p-monitor.service
+systemctl --user start p-monitor.service
+
+echo "p-monitor has been installed and started successfully!"
+echo "You can find the application icon in your system tray."
+echo "Logs are stored in ~/.p-monitor/logs/"

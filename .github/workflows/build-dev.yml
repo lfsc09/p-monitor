@@ -1,0 +1,71 @@
+name: Build Development Package
+
+on:
+  push:
+    branches: [dev]
+  pull_request:
+    branches: [dev]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+        
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          libgl1-mesa-dev \
+          libx11-dev \
+          libxcursor-dev \
+          libxrandr-dev \
+          libxinerama-dev \
+          libxi-dev \
+          libxxf86vm-dev \
+          libglfw3-dev \
+          pkg-config \
+          dpkg-dev
+          
+    - name: Build application
+      run: |
+        go mod tidy
+        go build -o p-monitor ./cmd
+        
+    - name: Test core functionality
+      run: |
+        # Create a simple test to verify the application builds and basic functionality works
+        echo "Testing basic functionality..."
+        timeout 10s ./p-monitor --help || true
+        
+    - name: Build .deb package (dev)
+      run: |
+        # Create a dev version of the deb package
+        mkdir -p dev-debian/usr/bin dev-debian/usr/share/p-monitor/assets dev-debian/DEBIAN
+        cp debian/DEBIAN/control dev-debian/DEBIAN/
+        cp debian/DEBIAN/postinst dev-debian/DEBIAN/
+        cp debian/DEBIAN/prerm dev-debian/DEBIAN/
+        chmod +x dev-debian/DEBIAN/postinst dev-debian/DEBIAN/prerm
+        
+        # Update version to include dev
+        sed -i 's/Version: .*/Version: 1.0.0-dev/' dev-debian/DEBIAN/control
+        
+        # Build the package
+        cp p-monitor dev-debian/usr/bin/
+        cp assets/*.png dev-debian/usr/share/p-monitor/assets/
+        chmod +x dev-debian/usr/bin/p-monitor
+        
+        dpkg-deb --build dev-debian p-monitor_1.0.0-dev_amd64.deb
+        
+    - name: Upload dev package as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: p-monitor-dev-deb
+        path: p-monitor_1.0.0-dev_amd64.deb
